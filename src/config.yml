@@ -1,0 +1,24 @@
+
+reqinfo:
+  url: http://10.61.176.27/api
+
+#日志配置信息
+logfile:
+  #日志路径
+  logdir: ./logs
+  # 日志文件名称
+  filename: app1.log
+  # 日志级别 debug < info < warn < error < dpanic < panic < fatal
+  loglevel: "debug"
+  # 日志文件最大大小，单位M
+  maxsize: 128
+  # 文件保留个数， 多于30个文件，清理比较旧的日志
+  maxbackups: 30
+  # 日志切割间隙
+  maxage: 1
+  # 文件日志是否压缩
+  compress: true
+  # true:在终端和文件同时输出日志; false:只在文件输出日志
+  printtag: true
+
+

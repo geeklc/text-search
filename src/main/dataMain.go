@@ -2,6 +2,7 @@ package main
 
 import (
 	"go.uber.org/zap"
+	"net/http"
 	"text-search/src/common"
 	"text-search/src/logger"
 	"text-search/src/weaviate"
@@ -27,13 +28,15 @@ func main() {
 		return
 	}*/
 
-	content, err := weaviate.SearchContentFromBegTest("找一个支持weaviate的向量库管理端")
+	/*content, err := weaviate.SearchContentFromBegTest("找一个支持weaviate的向量库管理端")*/
+	/*content, err := weaviate.GetLocalContext("找一个支持weaviate的向量库管理端")
 	if err != nil {
 		logger.Logger.Error("保存数据报错", zap.Any("错误信息", err))
 		return
 	}
-	logger.Logger.Info("查询结果：", zap.Any("", content))
-
+	logger.Logger.Info("查询结果：", zap.Any("", content))*/
+	http.HandleFunc("/", proxyHandler)
+	http.ListenAndServe(":8181", nil)
 }
 
 func insertData() error {

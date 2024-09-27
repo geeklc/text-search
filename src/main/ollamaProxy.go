@@ -13,11 +13,12 @@ import (
 
 const OLLAMA_HOSTNAME = "http://192.168.0.116:11434"
 
+// 代理处理逻辑
 func proxyHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	//如果不是回话请求则直接代理信息
 	if path != "/api/chat" {
-		proxyRequest(w, r, r.Body)
+		proxyRequest(w, r, r.Body, false)
 		return
 	}
 	// 读取请求体
@@ -46,9 +47,10 @@ func proxyHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	proxyRequest(w, r, bytes.NewReader(dataByte))
+	proxyRequest(w, r, bytes.NewReader(dataByte), true)
 }
 
+// 处理请求信息，预置上下文
 func dealRequetMsgs(reqBody map[string]interface{}) (map[string]interface{}, error) {
 	messages := reqBody["messages"]
 	msgArr := messages.([]interface{})
@@ -76,6 +78,7 @@ func dealRequetMsgs(reqBody map[string]interface{}) (map[string]interface{}, err
 	return reqBody, nil
 }
 
+// 获取上下文信息
 func GetLocalContext(content string) ([]map[string]interface{}, error) {
 	localContext, err := weaviate.SearchContentFromBegTest(content)
 	if err != nil {
@@ -105,11 +108,9 @@ func GetLocalContext(content string) ([]map[string]interface{}, error) {
 	return returnArr, nil
 }
 
-func proxyRequest(w http.ResponseWriter, r *http.Request, reqBody io.Reader) {
-	// 设置响应头
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
+// 请求转发
+func proxyRequest(w http.ResponseWriter, r *http.Request, reqBody io.Reader, streamFlag bool) {
+
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
@@ -126,18 +127,29 @@ func proxyRequest(w http.ResponseWriter, r *http.Request, reqBody io.Reader) {
 		return
 	}
 	defer resp.Body.Close()
+	if streamFlag {
+		// 设置响应头
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
 
-	// 流式响应
-	buffer := make([]byte, 1024)
-	for {
-		n, err := resp.Body.Read(buffer)
-		if n > 0 {
-			// 写入流响应
-			w.Write(buffer[:n])
-			w.(http.Flusher).Flush() // 刷新响应缓冲区
+		// 流式响应
+		buffer := make([]byte, 1024)
+		for {
+			n, err := resp.Body.Read(buffer)
+			if n > 0 {
+				// 写入流响应
+				w.Write(buffer[:n])
+				w.(http.Flusher).Flush() // 刷新响应缓冲区
+			}
+			if err != nil {
+				break
+			}
 		}
-		if err != nil {
-			break
-		}
+	} else {
+		body, _ := io.ReadAll(resp.Body)
+		w.WriteHeader(resp.StatusCode)
+		w.Write(body)
 	}
+
 }

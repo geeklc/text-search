@@ -2,7 +2,6 @@ package main
 
 import (
 	"go.uber.org/zap"
-	"net/http"
 	"text-search/src/common"
 	"text-search/src/logger"
 	"text-search/src/weaviate"
@@ -14,14 +13,14 @@ func main() {
 		logger.Logger.Error("初始化报错", zap.Any("错误信息", err))
 	}
 	weaviate.InitClient()
-	/*//创建class
+	//创建class
 	err = weaviate.CreateBegTestClass()
 	if err != nil {
 		logger.Logger.Error("创建class报错", zap.Any("错误信息", err))
 		return
 	}
 
-	//保存数据
+	/*//保存数据
 	err = insertData()
 	if err != nil {
 		logger.Logger.Error("保存数据报错", zap.Any("错误信息", err))
@@ -35,8 +34,8 @@ func main() {
 		return
 	}
 	logger.Logger.Info("查询结果：", zap.Any("", content))*/
-	http.HandleFunc("/", proxyHandler)
-	http.ListenAndServe(":8181", nil)
+	/*http.HandleFunc("/", proxyHandler)
+	http.ListenAndServe(":8181", nil)*/
 }
 
 func insertData() error {

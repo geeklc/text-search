@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const OLLAMA_HOSTNAME = "http://192.168.0.116:11434"
+const OLLAMA_HOSTNAME = "http://192.168.0.117:11434"
 
 // 代理处理逻辑
 func proxyHandler(w http.ResponseWriter, r *http.Request) {

@@ -38,7 +38,7 @@ func getVectorizer(proNames ...string) map[string]interface{} {
 	vectorizer := map[string]interface{}{
 		"text2vec-ollama": map[string]interface{}{
 			"properties":         proNames,
-			"apiEndpoint":        "http://192.168.0.116:11434",
+			"apiEndpoint":        "http://192.168.0.117:11434",
 			"model":              "nomic-embed-text",
 			"vectorizeClassName": false,
 		},

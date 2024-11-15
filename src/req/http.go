@@ -68,7 +68,7 @@ func addHeader(req *http.Request) {
 
 // 获取请求路径
 func getUrl(uri string) string {
-	url := "http://192.168.0.116:11434"
+	url := "http://192.168.0.117:11434"
 	if uri == "" {
 		return url
 	}

@@ -44,7 +44,7 @@ func getVectorizer2(proNames ...string) map[string]interface{} {
 	vectorizer := map[string]interface{}{
 		"text2vec-ollama": map[string]interface{}{
 			"properties":         proNames,
-			"apiEndpoint":        "http://192.168.0.116:11434",
+			"apiEndpoint":        "http://192.168.0.117:11434",
 			"model":              "znbang/bge:large-zh-v1.5-f32",
 			"vectorizeClassName": false,
 		},
